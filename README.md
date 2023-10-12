@@ -1,16 +1,23 @@
 # blockchain_certify
 
-A new Flutter project.
+#Overview
 
-## Getting Started
+This Flutter-based application simplifies certificate management for teachers and students. Leveraging Firebase for backend services provides secure authentication and scalable cloud-based data storage. Certificates are stored on the blockchain to ensure tamper-proofing.
 
-This project is a starting point for a Flutter application.
+#Technology Stack
+Frontend: Flutter
+Backend: Firebase (Authentication and Realtime Database/Firestore)
+Database: Firebase Realtime Database or Firestore
+Blockchain: IPFS
+Authentication: Firebase Authentication
+Design: Figma
+Version Control: Git (GitHub)
 
-A few resources to get you started if this is your first Flutter project:
+Sprint 1 Highlights
+Onboarding, login, and signup pages developed.
+Student signup feature implemented securely.
+Initial database schema designed for user information.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Sprint 2 Goals
+Integrate Firebase for authentication.
+Begin development of the student-side application.
