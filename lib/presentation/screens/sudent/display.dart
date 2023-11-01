@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/globals.dart' as globals;
+import 'package:blockchain_certify/globals.dart' as globals;
 
 class displayImage extends StatelessWidget {
   const displayImage({Key? key}) : super(key: key);

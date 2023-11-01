@@ -5,12 +5,12 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import 'package:todo_app/presentation/widgets/mybutton.dart';
-import 'package:todo_app/presentation/widgets/mysnackbar.dart';
-import 'package:todo_app/presentation/widgets/mytextfield.dart';
-import 'package:todo_app/shared/constants/strings.dart';
-import 'package:todo_app/shared/styles/colors.dart';
-import 'package:todo_app/shared/validators.dart';
+import 'package:blockchain_certify/presentation/widgets/mybutton.dart';
+import 'package:blockchain_certify/presentation/widgets/mysnackbar.dart';
+import 'package:blockchain_certify/presentation/widgets/mytextfield.dart';
+import 'package:blockchain_certify/shared/constants/strings.dart';
+import 'package:blockchain_certify/shared/styles/colors.dart';
+import 'package:blockchain_certify/shared/validators.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class forgorPage extends StatefulWidget {

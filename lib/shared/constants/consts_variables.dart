@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/data/models/onboarding_model.dart';
-import 'package:todo_app/shared/constants/assets_path.dart';
-import 'package:todo_app/shared/styles/colors.dart';
+import 'package:blockchain_certify/data/models/onboarding_model.dart';
+import 'package:blockchain_certify/shared/constants/assets_path.dart';
+import 'package:blockchain_certify/shared/styles/colors.dart';
 
 List<OnBoardingModel> onboardinglist = const [
   OnBoardingModel(

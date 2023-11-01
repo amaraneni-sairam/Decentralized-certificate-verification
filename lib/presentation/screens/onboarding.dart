@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:todo_app/bloc/onboarding/onboarding_cubit.dart';
-import 'package:todo_app/presentation/widgets/circular_button.dart';
-import 'package:todo_app/presentation/widgets/custom_dots.dart';
-import 'package:todo_app/presentation/widgets/mybutton.dart';
-import 'package:todo_app/presentation/widgets/mycustompainter.dart';
-import 'package:todo_app/presentation/widgets/onboarding_item.dart';
-import 'package:todo_app/shared/constants/consts_variables.dart';
-import 'package:todo_app/shared/constants/strings.dart';
-import 'package:todo_app/shared/styles/colors.dart';
+import 'package:blockchain_certify/bloc/onboarding/onboarding_cubit.dart';
+import 'package:blockchain_certify/presentation/widgets/circular_button.dart';
+import 'package:blockchain_certify/presentation/widgets/custom_dots.dart';
+import 'package:blockchain_certify/presentation/widgets/mybutton.dart';
+import 'package:blockchain_certify/presentation/widgets/mycustompainter.dart';
+import 'package:blockchain_certify/presentation/widgets/onboarding_item.dart';
+import 'package:blockchain_certify/shared/constants/consts_variables.dart';
+import 'package:blockchain_certify/shared/constants/strings.dart';
+import 'package:blockchain_certify/shared/styles/colors.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key? key}) : super(key: key);

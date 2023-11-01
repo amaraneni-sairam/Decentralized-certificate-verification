@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_app/data/repositories/user_repository.dart';
-import 'package:todo_app/data/repositories/firestore_crud.dart';
+import 'package:blockchain_certify/data/repositories/user_repository.dart';
+import 'package:blockchain_certify/data/repositories/firestore_crud.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:todo_app/globals.dart' as globals;
+import 'package:blockchain_certify/globals.dart' as globals;
 
 class FirebaseAuthRepo implements UserRepository {
   final _firebaseAuth = FirebaseAuth.instance;

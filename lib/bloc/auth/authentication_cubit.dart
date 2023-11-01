@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:todo_app/data/repositories/firebase_auth.dart';
-import 'package:todo_app/data/repositories/firestore_crud.dart';
-import 'package:todo_app/presentation/widgets/mysnackbar.dart';
+import 'package:blockchain_certify/data/repositories/firebase_auth.dart';
+import 'package:blockchain_certify/data/repositories/firestore_crud.dart';
+import 'package:blockchain_certify/presentation/widgets/mysnackbar.dart';
 
 part 'authentication_state.dart';
 

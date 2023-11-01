@@ -1,6 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app/shared/styles/colors.dart';
+import 'package:blockchain_certify/shared/styles/colors.dart';
 
 import '../utilities.dart';
 

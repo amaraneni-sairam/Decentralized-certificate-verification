@@ -1,53 +1,48 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:blockchain_certify/bloc/auth/authentication_cubit.dart';
 import 'package:blockchain_certify/bloc/connectivity/connectivity_cubit.dart';
-import 'package:blockchain_certify/presentation/screens/forgot.dart';
-import 'package:blockchain_certify/presentation/screens/sudent/my_homepage.dart';
-import 'package:blockchain_certify/presentation/screens/teacher/teachhome.dart';
 import 'package:blockchain_certify/presentation/widgets/mybutton.dart';
 import 'package:blockchain_certify/presentation/widgets/myindicator.dart';
 import 'package:blockchain_certify/presentation/widgets/mysnackbar.dart';
 import 'package:blockchain_certify/presentation/widgets/mytextfield.dart';
-import 'package:blockchain_certify/presentation/widgets/progressindicator.dart';
 import 'package:blockchain_certify/shared/constants/assets_path.dart';
 import 'package:blockchain_certify/shared/constants/strings.dart';
 import 'package:blockchain_certify/shared/styles/colors.dart';
 import 'package:blockchain_certify/shared/validators.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:blockchain_certify/data/repositories/user_repository.dart';
-import 'package:blockchain_certify/data/repositories/firestore_crud.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:blockchain_certify/globals.dart' as globals;
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _namecontroller;
+  late TextEditingController _rollcontroller;
   late TextEditingController _emailcontroller;
   late TextEditingController _passwordcontroller;
-  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+    _namecontroller = TextEditingController();
     _emailcontroller = TextEditingController();
+    _rollcontroller = TextEditingController();
     _passwordcontroller = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
-
+    _namecontroller.dispose();
     _emailcontroller.dispose();
+    _rollcontroller.dispose();
     _passwordcontroller.dispose();
   }
 
@@ -78,6 +73,10 @@ class _LoginPageState extends State<LoginPage> {
                 color: Colors.red,
                 context: context);
           }
+
+          if (state is AuthenticationSuccessState) {
+            Navigator.pushReplacementNamed(context, homepage);
+          }
         },
         builder: (context, state) {
           if (state is AuthenticationLoadingState) {
@@ -98,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome !',
+                          'Heey !',
                           style:
                               Theme.of(context).textTheme.headline1?.copyWith(
                                     fontSize: 20.sp,
@@ -109,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: 1.5.h,
                         ),
                         Text(
-                          'Sign In To Continue !',
+                          'Create a New Account !',
                           style: Theme.of(context)
                               .textTheme
                               .subtitle1
@@ -119,7 +118,33 @@ class _LoginPageState extends State<LoginPage> {
                                   fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
-                          height: 10.h,
+                          height: 6.h,
+                        ),
+                        MyTextfield(
+                          hint: 'Full Name',
+                          icon: Icons.person,
+                          keyboardtype: TextInputType.name,
+                          validator: (value) {
+                            return value!.length < 3 ? 'Unvalid Name' : null;
+                          },
+                          textEditingController: _namecontroller,
+                        ),
+                        SizedBox(
+                          height: 3.h,
+                        ),
+                        MyTextfield(
+                          hint: 'Student Unique Id.',
+                          icon: Icons.person,
+                          keyboardtype: TextInputType.name,
+                          validator: (value) {
+                            return value!.length < 12
+                                ? 'Unvalid aadhar num'
+                                : null;
+                          },
+                          textEditingController: _rollcontroller,
+                        ),
+                        SizedBox(
+                          height: 3.h,
                         ),
                         MyTextfield(
                           hint: 'Email Address',
@@ -133,13 +158,13 @@ class _LoginPageState extends State<LoginPage> {
                           textEditingController: _emailcontroller,
                         ),
                         SizedBox(
-                          height: 4.h,
+                          height: 3.h,
                         ),
                         MyTextfield(
                           hint: 'Password',
                           icon: Icons.password,
-                          keyboardtype: TextInputType.text,
                           obscure: true,
+                          keyboardtype: TextInputType.text,
                           validator: (value) {
                             return value!.length < 6
                                 ? "Enter min. 6 characters"
@@ -151,62 +176,58 @@ class _LoginPageState extends State<LoginPage> {
                           height: 4.h,
                         ),
                         MyButton(
-                          color: Colors.deepPurple,
-                          width: 80.w,
-                          title: 'Login',
-                          func: () {
-                            if (connectivitycubit.state
-                                is ConnectivityOnlineState) {
-                              // _authenticatewithemailandpass(context, authcubit);
-                              login(
-                                  email: _emailcontroller.text,
-                                  password: _passwordcontroller.text,
-                                  ctx: context);
-                            } else {
-                              MySnackBar.error(
-                                  message:
-                                      'Please Check Your Internet Conection',
-                                  color: Colors.red,
-                                  context: context);
-                            }
-                          },
-                        ),
+                            color: Colors.deepPurple,
+                            width: 80.w,
+                            title: 'Sign Up',
+                            func: () async {
+                              QuerySnapshot aadhar = await FirebaseFirestore
+                                  .instance
+                                  .collection('valids')
+                                  .where("num", isEqualTo: _rollcontroller.text)
+                                  .get();
+                              if (aadhar.docs.isNotEmpty) {
+                                QuerySnapshot snap = await FirebaseFirestore
+                                    .instance
+                                    .collection('users')
+                                    .where("roll",
+                                        isEqualTo: _rollcontroller.text)
+                                    .get();
+
+                                if (snap.docs.isNotEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "User with entered aadhar already exists")));
+                                  return;
+                                } else {
+                                  debugPrint("no dataaaaaaa");
+                                  if (connectivitycubit.state
+                                      is ConnectivityOnlineState) {
+                                    _signupewithemailandpass(
+                                        context, authcubit);
+                                  } else {
+                                    MySnackBar.error(
+                                        message:
+                                            'Please Check Your Internet Conection',
+                                        color: Colors.red,
+                                        context: context);
+                                  }
+                                }
+                              } else {
+                                MySnackBar.error(
+                                    message: 'Please Enter Valid Aadhar Number',
+                                    color: Colors.red,
+                                    context: context);
+                              }
+                            }),
                         SizedBox(
-                          height: 2.h,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const forgorPage()),
-                                );
-                              },
-                              child: Text(
-                                'Forgot Password?',
-                                textAlign: TextAlign.right,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline1
-                                    ?.copyWith(
-                                      fontSize: 9.sp,
-                                      color: Colors.deepPurple,
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 2.h,
+                          height: 1.5.h,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Don\'t have an Account ?',
+                              'Already have an Account ?',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1
@@ -219,10 +240,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context, signuppage);
+                                Navigator.pushNamed(context, loginpage);
                               },
                               child: Text(
-                                'Sign Up',
+                                'Login',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline1
@@ -255,58 +276,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _authenticatewithemailandpass(context, AuthenticationCubit cubit) {
+  void _signupewithemailandpass(context, AuthenticationCubit cubit) {
     if (_formKey.currentState!.validate()) {
-      cubit.login(
-          email: _emailcontroller.text, password: _passwordcontroller.text);
+      cubit.register(
+          fullname: _namecontroller.text,
+          email: _emailcontroller.text,
+          password: _passwordcontroller.text,
+          roll: _rollcontroller.text);
     }
-  }
-}
-
-Future<void> login(
-    {required String email, required String password, required ctx}) async {
-  try {
-    final _firebaseAuth = FirebaseAuth.instance;
-    LoadingIndicatorDialog().show(ctx, 'Logging In');
-    await _firebaseAuth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then((currentuser) async {
-      final SharedPreferences preferences =
-          await SharedPreferences.getInstance();
-      preferences.setString('uid', currentuser.user!.uid);
-      await FireStoreCrud().checkRole(uid: currentuser.user!.uid);
-      //debugPrint(globals.role);
-      if (globals.role == 'teacher') {
-        LoadingIndicatorDialog().dismiss();
-        Navigator.pop(ctx);
-        Navigator.push(
-          ctx,
-          MaterialPageRoute(builder: (ctx) => const TeacherHome()),
-        );
-      } else if (globals.role == 'student') {
-        await FireStoreCrud().loadDetails(uid: currentuser.user!.uid);
-        debugPrint(globals.roll);
-        LoadingIndicatorDialog().dismiss();
-        Navigator.pop(ctx);
-        Navigator.push(
-          ctx,
-          MaterialPageRoute(builder: (ctx) => const StudentHome()),
-        );
-      }
-    });
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      //throw 'No user found for that email.';
-      LoadingIndicatorDialog().dismiss();
-      ScaffoldMessenger.of(ctx).showSnackBar(
-          const SnackBar(content: Text("No user found for that email")));
-    } else if (e.code == 'wrong-password') {
-      // throw 'Wrong password provided for that user.';
-      LoadingIndicatorDialog().dismiss();
-      ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(
-          content: Text("Wrong password provided for that user")));
-    }
-  } catch (e) {
-    throw e.toString();
   }
 }
