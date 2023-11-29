@@ -3,16 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:blockchain_certify/bloc/auth/authentication_cubit.dart';
-import 'package:blockchain_certify/bloc/connectivity/connectivity_cubit.dart';
-import 'package:blockchain_certify/presentation/widgets/mybutton.dart';
-import 'package:blockchain_certify/presentation/widgets/myindicator.dart';
-import 'package:blockchain_certify/presentation/widgets/mysnackbar.dart';
-import 'package:blockchain_certify/presentation/widgets/mytextfield.dart';
-import 'package:blockchain_certify/shared/constants/assets_path.dart';
-import 'package:blockchain_certify/shared/constants/strings.dart';
-import 'package:blockchain_certify/shared/styles/colors.dart';
-import 'package:blockchain_certify/shared/validators.dart';
+import 'package:blockchain/bloc/auth/authentication_cubit.dart';
+import 'package:blockchain/bloc/connectivity/connectivity_cubit.dart';
+import 'package:blockchain/presentation/widgets/mybutton.dart';
+import 'package:blockchain/presentation/widgets/myindicator.dart';
+import 'package:blockchain/presentation/widgets/mysnackbar.dart';
+import 'package:blockchain/presentation/widgets/mytextfield.dart';
+import 'package:blockchain/shared/constants/assets_path.dart';
+import 'package:blockchain/shared/constants/strings.dart';
+import 'package:blockchain/shared/styles/colors.dart';
+import 'package:blockchain/shared/validators.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -138,7 +138,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           keyboardtype: TextInputType.name,
                           validator: (value) {
                             return value!.length < 12
-                                ? 'Unvalid aadhar num'
+                                ? 'Unvalid uniqueId num'
                                 : null;
                           },
                           textEditingController: _rollcontroller,
@@ -180,12 +180,12 @@ class _SignUpPageState extends State<SignUpPage> {
                             width: 80.w,
                             title: 'Sign Up',
                             func: () async {
-                              QuerySnapshot aadhar = await FirebaseFirestore
+                              QuerySnapshot uniqueId = await FirebaseFirestore
                                   .instance
                                   .collection('valids')
                                   .where("num", isEqualTo: _rollcontroller.text)
                                   .get();
-                              if (aadhar.docs.isNotEmpty) {
+                              if (uniqueId.docs.isNotEmpty) {
                                 QuerySnapshot snap = await FirebaseFirestore
                                     .instance
                                     .collection('users')
@@ -197,7 +197,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text(
-                                              "User with entered aadhar already exists")));
+                                              "User with entered uniqueId already exists")));
                                   return;
                                 } else {
                                   debugPrint("no dataaaaaaa");
@@ -215,7 +215,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                 }
                               } else {
                                 MySnackBar.error(
-                                    message: 'Please Enter Valid Aadhar Number',
+                                    message:
+                                        'Please Enter Valid uniqueId Number',
                                     color: Colors.red,
                                     context: context);
                               }

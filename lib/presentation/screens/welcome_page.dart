@@ -2,14 +2,14 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:blockchain_certify/bloc/auth/authentication_cubit.dart';
-import 'package:blockchain_certify/bloc/connectivity/connectivity_cubit.dart';
-import 'package:blockchain_certify/presentation/widgets/mybutton.dart';
-import 'package:blockchain_certify/presentation/widgets/myindicator.dart';
-import 'package:blockchain_certify/presentation/widgets/mysnackbar.dart';
-import 'package:blockchain_certify/shared/constants/assets_path.dart';
-import 'package:blockchain_certify/shared/constants/strings.dart';
-import 'package:blockchain_certify/shared/styles/colors.dart';
+import 'package:blockchain/bloc/auth/authentication_cubit.dart';
+import 'package:blockchain/bloc/connectivity/connectivity_cubit.dart';
+import 'package:blockchain/presentation/widgets/mybutton.dart';
+import 'package:blockchain/presentation/widgets/myindicator.dart';
+import 'package:blockchain/presentation/widgets/mysnackbar.dart';
+import 'package:blockchain/shared/constants/assets_path.dart';
+import 'package:blockchain/shared/constants/strings.dart';
+import 'package:blockchain/shared/styles/colors.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);

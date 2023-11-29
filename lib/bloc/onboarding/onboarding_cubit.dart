@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:blockchain_certify/shared/constants/consts_variables.dart';
+import 'package:blockchain/shared/constants/consts_variables.dart';
 
 part 'onboarding_state.dart';
 

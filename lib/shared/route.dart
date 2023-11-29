@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:blockchain_certify/data/models/task_model.dart';
-import 'package:blockchain_certify/presentation/screens/teacher/generatecode_screen.dart';
-import 'package:blockchain_certify/presentation/screens/login_page.dart';
-import 'package:blockchain_certify/presentation/screens/sudent/my_homepage.dart';
-import 'package:blockchain_certify/presentation/screens/onboarding.dart';
-import 'package:blockchain_certify/presentation/screens/signup_page.dart';
-import 'package:blockchain_certify/presentation/screens/teacher/teachhome.dart';
-import 'package:blockchain_certify/presentation/screens/teacher/upload.dart';
-import 'package:blockchain_certify/presentation/screens/welcome_page.dart';
-import 'package:blockchain_certify/shared/constants/strings.dart';
+import 'package:blockchain/data/models/task_model.dart';
+import 'package:blockchain/presentation/screens/teacher/generatecode_screen.dart';
+import 'package:blockchain/presentation/screens/login_page.dart';
+import 'package:blockchain/presentation/screens/sudent/my_homepage.dart';
+import 'package:blockchain/presentation/screens/onboarding.dart';
+import 'package:blockchain/presentation/screens/signup_page.dart';
+import 'package:blockchain/presentation/screens/teacher/teachhome.dart';
+import 'package:blockchain/presentation/screens/teacher/upload.dart';
+import 'package:blockchain/presentation/screens/welcome_page.dart';
+import 'package:blockchain/shared/constants/strings.dart';
 
 class AppRoute {
   Route? generateRoute(RouteSettings settings) {

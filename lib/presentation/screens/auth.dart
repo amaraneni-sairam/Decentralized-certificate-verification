@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'dart:async';
 
-import 'package:blockchain_certify/globals.dart';
+import 'package:blockchain/globals.dart';
 
 class Login_Page extends StatefulWidget {
   @override

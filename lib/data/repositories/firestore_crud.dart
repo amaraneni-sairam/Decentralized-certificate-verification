@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:blockchain_certify/data/models/task_model.dart';
-import 'package:blockchain_certify/globals.dart' as globals;
+import 'package:blockchain/data/models/task_model.dart';
+import 'package:blockchain/globals.dart' as globals;
 
 class FireStoreCrud {
   FireStoreCrud();

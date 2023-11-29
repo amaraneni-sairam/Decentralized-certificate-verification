@@ -3,55 +3,51 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firestore_search_input/firestore_search_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:material_dialogs/material_dialogs.dart';
-import 'package:material_dialogs/widgets/buttons/icon_button.dart';
-import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:slide_countdown/slide_countdown.dart';
 import 'package:blockchain/bloc/auth/authentication_cubit.dart';
 import 'package:blockchain/bloc/connectivity/connectivity_cubit.dart';
 import 'package:blockchain/data/models/task_model.dart';
 import 'package:blockchain/data/repositories/firestore_crud.dart';
 import 'package:blockchain/presentation/screens/sudent/display.dart';
+import 'package:blockchain/presentation/screens/teacher/upload.dart';
 import 'package:blockchain/presentation/widgets/mybutton.dart';
 import 'package:blockchain/presentation/widgets/myindicator.dart';
 import 'package:blockchain/presentation/widgets/mysnackbar.dart';
 import 'package:blockchain/presentation/widgets/mytextfield.dart';
-import 'package:blockchain/presentation/widgets/progressindicator.dart';
 import 'package:blockchain/presentation/widgets/task_container.dart';
 import 'package:blockchain/shared/constants/assets_path.dart';
 import 'package:blockchain/shared/constants/consts_variables.dart';
 import 'package:blockchain/shared/constants/strings.dart';
 import 'package:blockchain/shared/services/notification_service.dart';
 import 'package:blockchain/shared/styles/colors.dart';
+import 'package:blockchain/presentation/screens/teacher/upload.dart';
 import 'package:blockchain/globals.dart' as globals;
 
-bool isLoad = false;
+bool isLoad = true;
 
-class StudentHome extends StatefulWidget {
-  const StudentHome({Key? key}) : super(key: key);
+class TeacherHome extends StatefulWidget {
+  const TeacherHome({Key? key}) : super(key: key);
 
   @override
-  State<StudentHome> createState() => _StudentHomeState();
+  State<TeacherHome> createState() => _StudentHomeState();
 }
 
-class _StudentHomeState extends State<StudentHome> {
+class _StudentHomeState extends State<TeacherHome> {
   static var currentdate = DateTime.now();
 
   final TextEditingController _usercontroller = TextEditingController(
       text: FirebaseAuth.instance.currentUser!.displayName);
-  late TextEditingController _codecontroller;
+
   @override
   void initState() {
     super.initState();
-    debugPrint(globals.uid);
-    debugPrint(globals.roll);
-    debugPrint(globals.classcode);
-    _codecontroller = TextEditingController();
+    bool isLoad = true;
     NotificationsHandler.requestpermission(context);
   }
 
@@ -127,7 +123,9 @@ class _StudentHomeState extends State<StudentHome> {
                           ),
                           Expanded(
                             child: Text(
-                              'Hello ${globals.name}',
+                              user.displayName != null
+                                  ? 'Hello Teacher'
+                                  : ' Hello Teacher',
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context)
                                   .textTheme
@@ -154,95 +152,129 @@ class _StudentHomeState extends State<StudentHome> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            DateFormat('MMMM, dd').format(DateTime.now()),
+                            DateFormat('MMMM, dd').format(currentdate),
                             style: Theme.of(context)
                                 .textTheme
                                 .headline1!
                                 .copyWith(fontSize: 17.sp),
                           ),
                           const Spacer(),
+                          MyButton(
+                            color: Colors.deepPurple,
+                            width: 40.w,
+                            title: '+ Upload',
+                            func: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const uploadPage()),
+                              );
+                            },
+                          )
                         ],
                       ),
                       SizedBox(
                         height: 3.h,
                       ),
-                      Container(
-                        child: Text(
-                          'Certificates',
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline1!
-                              .copyWith(fontSize: 15.sp),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
+                      //_buildDatePicker(context, connectivitycubit),
                       Expanded(
-                        child:
-                            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          // inside the <> you enter the type of your stream
+                        child: FirestoreSearchScaffold(
+                          //textCapitalization: TextCapitalization.characters,
+                          // keyboardType: TextInputType.text,
 
-                          stream: FirebaseFirestore.instance
-                              .collection('certificates')
-                              .where('num', isEqualTo: globals.roll)
-                              .snapshots(),
+                          firestoreCollectionName: 'certificates',
+                          searchBy: 'num',
+                          scaffoldBody: const Center(),
+                          dataListFromSnapshot:
+                              Certificates().dataListFromSnapshot,
+
                           builder: (context, snapshot) {
+                            print(snapshot.error);
+
                             if (snapshot.hasData) {
+                              final List<Certificates>? dataList =
+                                  snapshot.data;
+                              if (dataList!.isEmpty) {
+                                return const Center(
+                                  child: Text('No Results Returned'),
+                                );
+                              }
                               return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.docs.length,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                      onTap: () async {
-                                        globals.link = snapshot
-                                            .data!.docs[index]
-                                            .get('link');
+                                  itemCount: dataList.length,
+                                  itemBuilder: (context, index) {
+                                    final Certificates data = dataList[index];
+
+                                    return InkWell(
+                                      onTap: () {
+                                        globals.link = '${data.link}';
+                                        debugPrint(globals.link);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   const displayImage()),
                                         );
-                                        debugPrint(snapshot.data!.docs[index]
-                                            .get('link'));
                                       },
-                                      child: Card(
-                                        child: ListTile(
-                                          shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                width: 2,
-                                                color: Colors.deepPurple),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Divider(),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              '${data.num}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6,
+                                            ),
                                           ),
-                                          title: Text(
-                                            snapshot.data!.docs[index]
-                                                .get('type'),
-                                          ),
-                                        ),
-                                      ));
-                                },
-                              );
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0,
+                                                left: 8.0,
+                                                right: 8.0),
+                                            child: Text('${data.type}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1),
+                                          )
+                                          // ignore: prefer_const_constructors
+                                        ],
+                                      ),
+                                    );
+                                  });
                             }
-                            if (snapshot.hasError) {
-                              return const Text('Error');
-                            } else {
-                              return const CircularProgressIndicator();
+
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              if (!snapshot.hasData) {
+                                return const Center(
+                                  child: Text('No Results Returned'),
+                                );
+                              }
                             }
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           },
                         ),
-                      )
-                      //_buildDatePicker(context, connectivitycubit),
+                      ),
+                      SizedBox(
+                        height: 4.h,
+                      ),
 
                       /*Expanded(
                           child: StreamBuilder(
-                        stream: FireStoreCrud().previousAttendance(),
+                        stream: FireStoreCrud().getTasks(
+                          mydate: DateFormat('yyyy-MM-dd').format(currentdate),
+                        ),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<TaskModel>> snapshot) {
                           if (snapshot.hasError) {
-                            debugPrint(snapshot.error.toString());
                             return _nodatawidget();
                           }
                           if (snapshot.connectionState ==
@@ -316,82 +348,19 @@ class _StudentHomeState extends State<StudentHome> {
                   children: [
                     (user)
                         ? Container()
-                        : Wrap(
-                            children: List<Widget>.generate(
-                              4,
-                              (index) => Padding(
-                                padding: EdgeInsets.only(right: 2.w),
-                                child: InkWell(
-                                  onTap: () async {
-                                    _updatelogo(index, setModalState);
-
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
-                                    await prefs.setInt('plogo', index);
-                                  },
-                                  child: Container(
-                                      height: 8.h,
-                                      width: 8.h,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  profileimages[index]),
-                                              fit: BoxFit.cover)),
-                                      child: profileimagesindex == index
-                                          ? Icon(
-                                              Icons.done,
-                                              color: Colors.deepPurple,
-                                              size: 8.h,
-                                            )
-                                          : null),
-                                ),
-                              ),
-                            ),
+                        : SizedBox(
+                            height: 3.h,
                           ),
-                    SizedBox(
-                      height: 3.h,
-                    ),
                     (user)
                         ? Container()
-                        : MyTextfield(
-                            hint: '',
-                            icon: Icons.person,
-                            validator: (value) {},
-                            textEditingController: _usercontroller),
-                    SizedBox(
-                      height: 3.h,
-                    ),
+                        : SizedBox(
+                            height: 3.h,
+                          ),
                     (user)
                         ? Container()
-                        : BlocBuilder<AuthenticationCubit, AuthenticationState>(
-                            builder: (context, state) {
-                              if (state is UpdateProfileLoadingState) {
-                                return const MyCircularIndicator();
-                              }
-
-                              return MyButton(
-                                color: Colors.green,
-                                width: 80.w,
-                                title: "Update Profile",
-                                func: () {
-                                  if (_usercontroller.text == '') {
-                                    MySnackBar.error(
-                                        message: 'Name shoud not be empty!!',
-                                        color: Colors.red,
-                                        context: context);
-                                  } else {
-                                    authenticationCubit.updateUserInfo(
-                                        _usercontroller.text, context);
-                                    setState(() {});
-                                  }
-                                },
-                              );
-                            },
+                        : SizedBox(
+                            height: 3.h,
                           ),
-                    SizedBox(
-                      height: 3.h,
-                    ),
                     MyButton(
                       color: Colors.red,
                       width: 80.w,
@@ -420,6 +389,29 @@ class _StudentHomeState extends State<StudentHome> {
     setState(() {
       profileimagesindex = index;
     });
+  }
+
+  Widget _nodatawidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            MyAssets.clipboard,
+            height: 30.h,
+          ),
+          SizedBox(height: 3.h),
+          Text(
+            'There Is No Tasks',
+            style: Theme.of(context)
+                .textTheme
+                .headline1!
+                .copyWith(fontSize: 16.sp),
+          ),
+        ],
+      ),
+    );
   }
 
   SizedBox _buildDatePicker(
@@ -455,5 +447,33 @@ class _StudentHomeState extends State<StudentHome> {
         },
       ),
     );
+  }
+}
+
+class Certificates {
+  final String? num;
+  final String? type;
+  final String? link;
+
+  Certificates({
+    this.num,
+    this.type,
+    this.link,
+  });
+
+  //Create a method to convert QuerySnapshot from Cloud Firestore to a list of objects of this Certificates
+  //This function in essential to the working of FirestoreSearchScaffold
+
+  List<Certificates> dataListFromSnapshot(QuerySnapshot querySnapshot) {
+    return querySnapshot.docs.map((snapshot) {
+      final Map<String, dynamic> dataMap =
+          snapshot.data() as Map<String, dynamic>;
+
+      return Certificates(
+        num: dataMap['num'],
+        type: dataMap['type'],
+        link: dataMap['link'],
+      );
+    }).toList();
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:blockchain_certify/data/repositories/firestore_crud.dart';
+import 'package:blockchain/data/repositories/firestore_crud.dart';
 
 class TaskContainer extends StatelessWidget {
   final String id;
